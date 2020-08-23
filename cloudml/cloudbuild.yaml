@@ -1,0 +1,36 @@
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+    - '-eEuo'
+    - 'pipefail'
+    - '-c'
+    - |-
+      ts=`date +%Y%m%d%H%M`
+      job_id="simple_stock_training_$ts"
+      pwd
+      cd cloudml
+      key_id=`gcloud beta secrets versions access latest --secret=APCA_API_KEY_ID`
+      secret=`gcloud beta secrets versions access latest --secret=APCA_API_SECRET_KEY`
+      gcloud ai-platform jobs submit training $job_id --module-name trainer.task_simple_model --package-path trainer/ \
+      --region "us-central1" \
+      --python-version 3.7 \
+      --runtime-version 2.1 \
+      --job-dir "gs://iwasnothing-cloudml-job-dir/simple-stock-train" \
+      -- --key-id=$key_id --secret=$secret
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+    - '-eEuo'
+    - 'pipefail'
+    - '-c'
+    - |-
+      ts=`date +%Y%m%d%H%M`
+      job_id="indicators_stock_training_$ts"
+      pwd
+      cd cloudml
+      gcloud ai-platform jobs submit training $job_id --module-name trainer.indicator --package-path trainer/ \
+      --region "us-central1" \
+      --python-version 3.7 \
+      --runtime-version 2.1 \
+      --job-dir "gs://iwasnothing-cloudml-job-dir/indicators-stock-train" \

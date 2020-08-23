@@ -1,0 +1,19 @@
+trainingInput:
+  scaleTier: BASIC
+  hyperparameters:
+    goal: MINIMIZE
+    hyperparameterMetricTag: win-lr
+    maxTrials: 6
+    maxParallelTrials: 3
+    enableTrialEarlyStopping: True
+    params:
+    - parameterName: window-size
+      type: INTEGER
+      minValue: 5
+      maxValue: 60
+      scaleType: UNIT_LINEAR_SCALE
+    - parameterName: learning-rate
+      type: INTEGER
+      minValue: 4
+      maxValue: 6
+      scaleType: UNIT_LINEAR_SCALE
